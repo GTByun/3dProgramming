@@ -124,10 +124,6 @@ void Update()
         int width, height;
         glfwGetFramebufferSize(window, &width, &height);
 
-        ////90도와 같이 각도로 연산하고 싶으면
-        ////glm의 삼각함수는 radian 형식으로 입력을 받기 때문에 변환해서 넣어주어야한다.
-        //glm::sin(glm::radians(90.0));  
-
         glClearColor(.0f, 0.0f, 0.0f, 0.1f);
         glClear(GL_COLOR_BUFFER_BIT);
 

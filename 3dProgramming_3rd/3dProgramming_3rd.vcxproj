@@ -21,10 +21,9 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{8a1278b4-43ee-400b-801d-8e1a38012225}</ProjectGuid>
-    <RootNamespace>glfwcircle</RootNamespace>
+    <ProjectGuid>{0b70a5b7-0d83-4bc0-bd34-4475fbe1bb8a}</ProjectGuid>
+    <RootNamespace>My3dProgramming3rd</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>3dProgramming_3rd</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

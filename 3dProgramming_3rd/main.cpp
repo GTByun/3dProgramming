@@ -27,7 +27,7 @@ int main()
     }
     glfwMakeContextCurrent(window);
     glfwSetKeyCallback(window, key_callback);
-    
+
     glClearColor(0.5, 0.5, 0.5, 1);
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 

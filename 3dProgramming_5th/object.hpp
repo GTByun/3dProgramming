@@ -5,10 +5,10 @@ class FireBall
 public:
     FireBall()
     {
-        r1 = 0.25f;
-        r2 = 0.3f;
-        r3 = 0.35f;
-        r4 = 0.4f;
+        r1 = 0.05f;
+        r2 = 0.08f;
+        r3 = 0.11f;
+        r4 = 0.14f;
         rot = 0;
     }
     ~FireBall() {}
@@ -21,8 +21,6 @@ public:
 
     void draw()
     {
-        float x, y;
-        float rx, ry;
         glLineWidth(7.0f);
 
         DrawCircleNew(0.25f, 0.0f, 1.0f, 0.5f, r4, r3);
