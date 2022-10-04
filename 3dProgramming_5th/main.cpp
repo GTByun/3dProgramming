@@ -1,15 +1,17 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <stdlib.h>
-#include <time.h>
 #include "object.hpp"
-
 
 #pragma comment(lib, "OpenGL32")
 
 
 GLFWwindow* window;
 FireBall* f;
+float hexDown = 0.6f;
+float hexW = 0.5f, hexH = 0.2f;
+float tower = 0.2f;
+int towerCount = 8;
 
 void Init();
 void Update();
@@ -20,11 +22,72 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 
 int main(void);
 
-float setRand()
+float SetRand()
 {
-    return (rand() % 10000 + 1) / 10000.0f;
+    return (float)rand() / RAND_MAX;
 }
 
+void SetRandColor(float r, float g, float b, float a)
+{
+    glColor4f(SetRand() * r, SetRand() * g, SetRand() * b, SetRand() * a);
+}
+
+float CarX(float rad)
+{
+    return glm::sin(glm::radians(rad));
+}
+
+float CarY(float rad)
+{
+    return glm::cos(glm::radians(rad));
+}
+
+void DrawHex(float plus, int repeat)
+{
+    float x, y;
+    glBegin(GL_LINE_LOOP);
+    for (float i = 0; i < repeat; i++)
+    {
+        float theta = i * plus;
+        x = CarX(theta) * hexW;
+        y = CarY(theta) * hexH - hexDown;
+        glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+        glVertex3f(x, y, 0.0f);
+    }
+    glEnd();
+}
+
+void DrawPillar(float min, float max)
+{
+    float x1, x2;
+    float y1, y2;
+    float h;
+
+    for (float i = 0; i < (int)(max - min); i++)
+    {
+        float theta = i + min;
+        if (theta < 0)
+        {
+            theta += 360;
+        }
+        x1 = CarX(theta) * hexW;
+        x2 = CarX(theta + 1) * hexW;
+        y1 = CarY(theta) * hexH - hexDown;
+        y2 = CarY(theta + 1) * hexH - hexDown;
+        h = rand() % 8;
+        int cons = 0;
+        glBegin(GL_TRIANGLE_STRIP);
+        while (cons < h)
+        {
+            SetRandColor(1.0f, 1.0f, 1.0f, 1.0f);
+            glVertex3f(x1, y1 + tower * cons, 1.0f);
+            SetRandColor(1.0f, 1.0f, 1.0f, 1.0f);
+            glVertex3f(x2, y2 + tower * cons, 1.0f);
+            cons++;
+        }
+        glEnd();
+    }
+}
 
 void Init()
 {
@@ -68,109 +131,18 @@ void Update()
         glClearColor(.0f, 0.0f, 0.0f, 0.1f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        
-
         glLineWidth(7.0f);
-        float x, y, z;
-        glBegin(GL_LINE_LOOP);
-        for (float theta = 0; theta < 360; theta++)
-        {
-            x = glm::sin(glm::radians(theta)) * 0.5;
-            y = glm::cos(glm::radians(theta)) * 0.2 - 0.6f;
-            z = glm::cos(glm::radians(theta)) * 0.5;
-            glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-            glVertex3f(x, y, z);
-        }
-        glEnd();
 
-        glBegin(GL_LINE_LOOP);
-        float theta = 0;
-        for (size_t i = 0; i < 5; i++)
-        {
-            x = glm::sin(glm::radians(theta)) * 0.5;
-            y = glm::cos(glm::radians(theta)) * 0.2 - 0.6f;
-            z = glm::cos(glm::radians(theta)) * 0.5;
-            glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-            glVertex3f(x, y, z);
-            theta += 144;
-        }
-        glEnd();
+        DrawHex(1.0f, 360);
 
-        float tower = 0.2f;
+        DrawHex(144.0f, 5);
 
-        srand(time(NULL));
-        glBegin(GL_LINE_STRIP);
-        float x1, x2, x3;
-        float y1, y2, y3;
-        float z1, z2, z3;
-        glColor4f(setRand(), setRand(), setRand(), setRand() * 0.5f);
-        glVertex3f(0.0f, -0.1f, 0.5f);
-        for (size_t height = 0; height < 6; height++)
-        {
-            float high = tower * height - 0.6f;
-            for (float i = -45; i < 45; i++)
-            {
-                x1 = glm::sin(glm::radians(i * 2)) * 0.5;
-                x2 = glm::sin(glm::radians(i * 2 + 1)) * 0.5;
-                x3 = glm::sin(glm::radians(i * 2 + 2)) * 0.5;
-                y1 = glm::cos(glm::radians(i * 2)) * 0.2 + high;
-                y2 = glm::cos(glm::radians(i * 2 + 1)) * 0.2 + high;
-                y3 = glm::cos(glm::radians(i * 2 + 2)) * 0.2 + high;
-                z1 = glm::cos(glm::radians(i * 2)) * 0.5;
-                z2 = glm::cos(glm::radians(i * 2 + 1)) * 0.5;
-                z3 = glm::cos(glm::radians(i * 2 + 2)) * 0.5;
-                glColor4f(setRand(), setRand(), setRand(), setRand() * 0.5f);
-                glVertex3f(x2, y2, z2);
-                glColor4f(setRand(), setRand(), setRand(), setRand() * 0.5f);
-                glVertex3f(x1, y1 + tower, z1);
-                glColor4f(setRand(), setRand(), setRand(), setRand() * 0.5f);
-                glVertex3f(x2, y2 + tower, z2);
-                glColor4f(setRand(), setRand(), setRand(), setRand() * 0.5f);
-                glVertex3f(x2, y2 + tower, z2);
-                glColor4f(setRand(), setRand(), setRand(), setRand() * 0.5f);
-                glVertex3f(x3, y3 + tower, z3);
-                glColor4f(setRand(), setRand(), setRand(), setRand() * 0.5f);
-                glVertex3f(x2, y2, z2);
-                glColor4f(setRand(), setRand(), setRand(), setRand() * 0.5f);
-                glVertex3f(x3, y3, z3);
-            }
-        }
-        glEnd();
+        DrawPillar(-90.0f, 90.0f);
+
         f->draw();
-        glBegin(GL_LINE_STRIP);
-        glColor4f(setRand(), setRand(), setRand(), setRand() * 0.5f);
-        glVertex3f(0.5f, -0.6f, 0.0f);
-        for (size_t height = 0; height < 6; height++)
-        {
-            float high = tower * height - 0.6f;
-            for (float i = 45; i < 135; i++)
-            {
-                x1 = glm::sin(glm::radians(i * 2)) * 0.5;
-                x2 = glm::sin(glm::radians(i * 2 + 1)) * 0.5;
-                x3 = glm::sin(glm::radians(i * 2 + 2)) * 0.5;
-                y1 = glm::cos(glm::radians(i * 2)) * 0.2 + high;
-                y2 = glm::cos(glm::radians(i * 2 + 1)) * 0.2 + high;
-                y3 = glm::cos(glm::radians(i * 2 + 2)) * 0.2 + high;
-                z1 = glm::cos(glm::radians(i * 2)) * 0.5;
-                z2 = glm::cos(glm::radians(i * 2 + 1)) * 0.5;
-                z3 = glm::cos(glm::radians(i * 2 + 2)) * 0.5;
-                glColor4f(setRand(), setRand(), setRand(), setRand() * 0.5f);
-                glVertex3f(x2, y2, z2);
-                glColor4f(setRand(), setRand(), setRand(), setRand() * 0.5f);
-                glVertex3f(x1, y1 + tower, z1);
-                glColor4f(setRand(), setRand(), setRand(), setRand() * 0.5f);
-                glVertex3f(x2, y2 + tower, z2);
-                glColor4f(setRand(), setRand(), setRand(), setRand() * 0.5f);
-                glVertex3f(x2, y2 + tower, z2);
-                glColor4f(setRand(), setRand(), setRand(), setRand() * 0.5f);
-                glVertex3f(x3, y3 + tower, z3);
-                glColor4f(setRand(), setRand(), setRand(), setRand() * 0.5f);
-                glVertex3f(x2, y2, z2);
-                glColor4f(setRand(), setRand(), setRand(), setRand() * 0.5f);
-                glVertex3f(x3, y3, z3);
-            }
-        }
-        glEnd();
+
+        DrawPillar(90.0f, 270.0f);
+        
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
