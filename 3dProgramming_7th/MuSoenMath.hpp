@@ -4,16 +4,7 @@ class Matrix
 public:
 	//이건 데이터를 담는 2차원 배열
 	double mat[3][3];
-	//이건 세세하게 정하는 생성자
-	Matrix(double mat[3][3])
-	{
-		for (size_t i = 0; i < 3; i++)
-		{
-			for (size_t j = 0; j < 3; j++)
-				this->mat[i][j] = mat[i][j];
-		}
-	}
-	//이건 모두 0으로 대입하는 생성자
+	//이건 생성자
 	Matrix()
 	{
 		for (size_t i = 0; i < 3; i++)
