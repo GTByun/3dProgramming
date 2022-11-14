@@ -182,8 +182,6 @@ class Vector4x1 : public Matrix
 class Position2 : public Identity
 {
 public:
-	/*2차원 좌표로 보내버리는 행렬
-	x : x좌표, y : y좌표*/
 	Position2(double x, double y) : Identity(3)
 	{
 		Set(0, 2, x);
@@ -194,8 +192,6 @@ public:
 class Rotation2 : public Identity
 {
 public:
-	/*2차원 회전을 시키는 행렬
-	degree : 육십분법 각도*/
 	Rotation2(double degree) : Identity(3)
 	{
 		double radian = degree * 3.141592 / 180;
@@ -209,8 +205,6 @@ public:
 class Scale2 : public Identity
 {
 public:
-	/*2차원 크기를 조절하는 행렬
-	x : 가로 크기, y : 세로 크기*/
 	Scale2(double x, double y) : Identity(3)
 	{
 		Set(0, 0, x);
@@ -226,8 +220,6 @@ public:
 class Position3 : public Identity
 {
 public:
-	/*3차원 좌표로 보내버리는 행렬
-	x : x좌표, y : y좌표 z : z좌표*/
 	Position3(double x, double y, double z) : Identity(4)
 	{
 		Set(0, 2, x);
@@ -272,8 +264,6 @@ public:
 class Scale3 : public Identity
 {
 public:
-	/*2차원 크기를 조절하는 행렬
-	x : 좌우 크기, y : 상하 크기, z : 전후 크기*/
 	Scale3(double x, double y, double z) : Identity(4)
 	{
 		Set(0, 0, x);
