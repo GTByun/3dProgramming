@@ -1,11 +1,14 @@
 #include <iostream>
+#include <cmath>
 
 using namespace std;
 
 class Matrix
 {
 public:
+	/*너비*/
 	int width;
+	/*높이*/
 	int height;
 	
 	/*width : 행렬 너비, height : 행렬 높이*/
@@ -25,9 +28,7 @@ public:
 	~Matrix()
 	{
 		for (size_t i = 0; i < height; i++)
-		{
 			delete[] data[i];
-		}
 		delete[] data;
 	}
 
@@ -42,19 +43,22 @@ public:
 		}
 	}
 
-	/*x : 가로 위치, y : 세로 위치, value : 대입값*/
+	/*행렬 한 칸에 값을 대입한다.
+	x : 가로 위치, y : 세로 위치, value : 대입값*/
 	void Set(int x, int y, double value)
 	{
 		data[y][x] = value;
 	}
 
-	/*x : 가로 위치, y : 세로 위치, value : 증감값*/
+	/*행렬 한 칸에 값을 더한다.
+	x : 가로 위치, y : 세로 위치, value : 증감값*/
 	void Plus(int x, int y, double value)
 	{
 		data[y][x] += value;
 	}
 
-	/*x : 가로 위치, y : 세로 위치*/
+	/*행렬 한 칸의 값을 가져온다.
+	x : 가로 위치, y : 세로 위치*/
 	double Get(int x, int y)
 	{
 		return data[y][x];
@@ -72,12 +76,15 @@ public:
 		return rtn;
 	}
 private:
+	/*행렬값*/
 	double** data;
 };
 
 class Identity : public Matrix
 {
 public:
+	/*항등행렬
+	size : 가로세로 크기*/
 	Identity(int size) : Matrix(size, size)
 	{
 		for (size_t i = 0; i < size; i++)
@@ -88,18 +95,42 @@ public:
 class Matrix4 : public Matrix
 {
 public:
+	/*모든 값이 0인 배열 생성*/
 	Matrix4() : Matrix(4, 4){}
+	/*4 * 4 정적 배열의 값을 복사하여 생성
+	data : 배열*/
+	Matrix4(double data[4][4]) : Matrix(4, 4)
+	{
+		for (size_t i = 0; i < 4; i++)
+		{
+			for (size_t j = 0; j < 4; j++)
+				Set(j, i, data[i][j]);
+		}
+	}
 };
 
 class Matrix3 : public Matrix
 {
 public:
+	/*모든 값이 0인 배열 생성*/
 	Matrix3() : Matrix(3, 3){}
+	/*3 * 3 정적 배열의 값을 복사하여 생성
+	data : 배열*/
+	Matrix3(double data[3][3]) : Matrix(3, 3)
+	{
+		for (size_t i = 0; i < 3; i++)
+		{
+			for (size_t j = 0; j < 3; j++)
+				Set(j, i, data[i][j]);
+		}
+	}
 };
 
 class Vector3 : public Matrix
 {
 public:
+	/*3차원 벡터(가로) 생성
+	x : 1번째 값, y : 2번째 값, z : 3번째 값*/
 	Vector3(double x, double y, double z) : Matrix(3, 1)
 	{
 		Set(0, 0, x);
@@ -111,6 +142,8 @@ public:
 class Vector1x3 : public Matrix
 {
 public:
+	/*3차원 벡터(세로) 생성
+	x : 1번째 값, y : 2번째 값, z : 3번째 값*/
 	Vector1x3(double x, double y, double z) : Matrix(1, 3)
 	{
 		Set(0, 0, x);
@@ -122,6 +155,8 @@ public:
 class Vector4 : public Matrix
 {
 public:
+	/*4차원 벡터(가로) 생성
+	x : 1번째 값, y : 2번째 값, z : 3번째 값, w : 4번째 값*/
 	Vector4(double x, double y, double z, double w) : Matrix(4, 1)
 	{
 		Set(0, 0, x);
@@ -133,6 +168,8 @@ public:
 
 class Vector4x1 : public Matrix
 {
+	/*4차원 벡터(세로) 생성
+	x : 1번째 값, y : 2번째 값, z : 3번째 값, w : 4번째 값*/
 	Vector4x1(double x, double y, double z, double w) : Matrix(1, 4)
 	{
 		Set(0, 0, x);
@@ -142,6 +179,114 @@ class Vector4x1 : public Matrix
 	}
 };
 
+class Position2 : public Identity
+{
+public:
+	/*2차원 좌표로 보내버리는 행렬
+	x : x좌표, y : y좌표*/
+	Position2(double x, double y) : Identity(3)
+	{
+		Set(0, 2, x);
+		Set(1, 2, y);
+	}
+};
+
+class Rotation2 : public Identity
+{
+public:
+	/*2차원 회전을 시키는 행렬
+	degree : 육십분법 각도*/
+	Rotation2(double degree) : Identity(3)
+	{
+		double radian = degree * 3.141592 / 180;
+		Set(0, 0, cos(radian));
+		Set(1, 0, sin(radian));
+		Set(0, 1, -sin(radian));
+		Set(1, 1, cos(radian));
+	}
+};
+
+class Scale2 : public Identity
+{
+public:
+	/*2차원 크기를 조절하는 행렬
+	x : 가로 크기, y : 세로 크기*/
+	Scale2(double x, double y) : Identity(3)
+	{
+		Set(0, 0, x);
+		Set(1, 1, y);
+	}
+	Scale2(double size) : Identity(3)
+	{
+		Set(0, 0, size);
+		Set(1, 1, size);
+	}
+};
+
+class Position3 : public Identity
+{
+public:
+	/*3차원 좌표로 보내버리는 행렬
+	x : x좌표, y : y좌표 z : z좌표*/
+	Position3(double x, double y, double z) : Identity(4)
+	{
+		Set(0, 2, x);
+		Set(1, 2, y);
+		Set(2, 2, z);
+	}
+};
+
+enum Rotate3Option
+{
+	Roll,
+	Yaw,
+	Pitch
+};
+
+class Rotation3 : public Identity
+{
+public:
+	Rotation3(Rotate3Option r3o, double degree) : Identity(4)
+	{
+		double radian = degree * 3.141592 / 180;
+		int changePos[2] = { 0, 1 };
+		switch (r3o)
+		{
+		case Roll:
+			break;
+		case Yaw:
+			changePos[1] = 2;
+			break;
+		case Pitch:
+			changePos[0] = 1;
+			changePos[1] = 2;
+			break;
+		}
+		Set(changePos[0], changePos[0], cos(radian));
+		Set(changePos[1], changePos[0], sin(radian));
+		Set(changePos[0], changePos[1], -sin(radian));
+		Set(changePos[1], changePos[1], cos(radian));
+	}
+};
+
+class Scale3 : public Identity
+{
+public:
+	/*2차원 크기를 조절하는 행렬
+	x : 좌우 크기, y : 상하 크기, z : 전후 크기*/
+	Scale3(double x, double y, double z) : Identity(4)
+	{
+		Set(0, 0, x);
+		Set(1, 1, y);
+		Set(2, 2, z);
+	}
+	Scale3(double size) : Identity(4)
+	{
+		Set(0, 0, size);
+		Set(1, 1, size);
+		Set(2, 2, size);
+	}
+};
 
 Matrix* operator+(Matrix& mat1, Matrix& mat2)
 {
@@ -220,6 +365,11 @@ Matrix* operator*(double num, Matrix& mat)
 
 Matrix* operator/(Matrix& mat, double num)
 {
+	if (num == 0)
+	{
+		cout << "오류 : 0으로 나눌 수 없음";
+		exit(-1);
+	}
 	Matrix* rtn = new Matrix(mat.width, mat.height);
 	for (size_t i = 0; i < mat.width; i++)
 	{
