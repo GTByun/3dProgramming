@@ -283,7 +283,7 @@ Matrix* operator+(Matrix& mat1, Matrix& mat2)
 	if (mat1.width != mat2.width || mat1.height != mat2.height)
 	{
 		cout << "오류 : 맞지 않는 행렬끼리의 합연산";
-		return new Matrix(1, 1);
+		exit(-1);
 	}
 	Matrix* rtn = new Matrix(mat1.width, mat1.height);
 	for (size_t i = 0; i < mat1.width; i++)
